@@ -27,7 +27,7 @@ jobs:
         uses: githubocto/flat@v3
         with:
           http_url: https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
-          downloaded_filename: nnn/nvm-sh_install.sh
+          downloaded_filename: nvm-sh_install.sh
       - name: Fetch data
         uses: githubocto/flat@v3
         with:
