@@ -33,3 +33,13 @@ jobs:
         with:
           http_url: https://cloudron.io/cloudron-setup
           downloaded_filename: cloudron-setup.sh
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://repo.jellyfin.org/install-debuntu.sh
+          downloaded_filename: jellyfin_install-debuntu.sh
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://raw.githubusercontent.com/meilisearch/meilisearch/latest/download-latest.sh
+          downloaded_filename: meilisearch_latest.sh
