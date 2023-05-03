@@ -1,30 +1,35 @@
 name: Flat
-
 on:
   push:
     branches:
       - main
     paths:
-      - .github/workflows/flat.yml    
+      - .github/workflows/flat.yml
   workflow_dispatch: null
   schedule:
-    - cron: '*/30 * * * *'
-
+    - cron: "*/30 * * * *"
 jobs:
   scheduled:
     runs-on: ubuntu-latest
     steps:
-      # This step installs Deno, which is a new Javascript runtime that improves on Node. Can be used for an optional postprocessing step
       - name: Setup deno
         uses: denoland/setup-deno@main
         with:
           deno-version: v1.10.x
-      # Check out the repository so it can read the files inside of it and do other operations
       - name: Check out repo
         uses: actions/checkout@v2
-      # The Flat Action step. We fetch the data in the http_url and save it as downloaded_filename
       - name: Fetch data
         uses: githubocto/flat@v3
         with:
           http_url: https://raw.githubusercontent.com/docker/docker-install/master/install.sh
-          downloaded_filename: install.sh
+          downloaded_filename: docker_install.sh
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
+          downloaded_filename: nvm-sh_install.sh
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://cloudron.io/cloudron-setup
+          downloaded_filename: cloudron-setup.sh
