@@ -7,7 +7,8 @@ on:
       - .github/workflows/flat.yml
   workflow_dispatch: null
   schedule:
-    - cron: "*/30 * * * *"
+  # jeden Tag um 5:30 Uhr und 17:30 Uhr UTC
+    - cron: '30 5,17 * * *'
 jobs:
   scheduled:
     runs-on: ubuntu-latest
