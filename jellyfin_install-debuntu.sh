@@ -5,7 +5,7 @@ shopt -s extglob
 # Lists of supported architectures, Debian, and Ubuntu releases
 SUPPORTED_ARCHITECTURES='@(amd64|armhf|arm64)'
 SUPPORTED_DEBIAN_RELEASES='@(buster|bullseye|bookworm)'
-SUPPORTED_UBUNTU_RELEASES='@(trusty|xenial|bionic|cosmic|disco|eoan|focal|groovy|hirsute|impish|jammy|kinetic|lunar)'
+SUPPORTED_UBUNTU_RELEASES='@(bionic|cosmic|disco|eoan|focal|groovy|hirsute|impish|jammy|kinetic|lunar)'
 
 # Check that /etc/apt exists; if not, this isn't a valid distro for this script
 if [[ ! -d /etc/apt ]]; then
@@ -29,37 +29,6 @@ if [[ ! -f /etc/os-release ]]; then
     exit 1
 fi
 
-# Get the paths to curl and wget
-CURL=$( which curl )
-WGET=$( which wget )
-
-# Create our array of to-be-installed packages
-INSTALL_PKGS=()
-
-# Pick our optimal fetching program (curl, then wget, then install curl)
-if [[ -n ${CURL} ]]; then
-    FETCH="${CURL} -fsSL"
-elif [[ -n ${WGET} ]]; then
-    FETCH="${WGET} -O-"
-else
-    echo "Failed to find a suitable download program. We're not sure how you dowloaded this script, but we'll install 'curl' automatically."
-    # shellcheck disable=SC2206
-    # We are OK with word-splitting here since we control the contents
-    INSTALL_PKGS=( ${INSTALL_PKGS[@]} curl )
-    FETCH="${CURL} -fsSL"
-    echo
-fi
-
-# Get the path to gpg or install it
-GNUPG=$( which gpg )
-if [[ -z ${GNUPG} ]]; then
-    echo "Failed to find the GNUPG binary, but we'll install 'gnupg' automatically."
-    # shellcheck disable=SC2206
-    # We are OK with word-splitting here since we control the contents
-    INSTALL_PKGS=( ${INSTALL_PKGS[@]} gnupg )
-    echo
-fi
-
 echo "> Determining optimal repository settings."
 
 # Get the (dpkg) architecture and base OS from /etc/os-release
@@ -74,7 +43,8 @@ case "${ARCHITECTURE}" in
         true
     ;;
     *)
-        echo "Sorry, we don't support the CPU architecture '${ARCHITECTURE}'."
+        echo "Sorry, we don't support the CPU architecture '${ARCHITECTURE}' with this script."
+        echo "Please consider a Docker-based or manual install instead."
         exit 1
     ;;
 esac
@@ -116,7 +86,8 @@ case "${REPO_OS}" in
                 true
             ;;
             *)
-                echo "Sorry, we don't support the Debian codename '${VERSION}'."
+                echo "Sorry, we don't support the Debian codename '${VERSION}' with this script."
+                echo "Please consider a Docker-based or manual install instead."
                 exit 1
             ;;
         esac
@@ -129,13 +100,15 @@ case "${REPO_OS}" in
                 true
             ;;
             *)
-                echo "Sorry, we don't support the Ubuntu codename '${VERSION}'."
+                echo "Sorry, we don't support the Ubuntu codename '${VERSION}' with this script."
+                echo "Please consider a Docker-based or manual install instead."
                 exit 1
             ;;
         esac
     ;;
     *)
-        echo "Sorry, we don't support the base OS '${REPO_OS}'."
+        echo "Sorry, we don't support the base OS '${REPO_OS}' with this script."
+        echo "Please consider a Docker-based or manual install instead."
         exit 1
     ;;
 esac
@@ -154,6 +127,37 @@ echo -en "If this looks correct, press <Enter> now to continue installing Jellyf
 read < /dev/tty
 
 echo
+
+# Get the paths to curl and wget
+CURL=$( which curl )
+WGET=$( which wget )
+
+# Create our array of to-be-installed packages
+INSTALL_PKGS=()
+
+# Pick our optimal fetching program (curl, then wget, then install curl)
+if [[ -n ${CURL} ]]; then
+    FETCH="${CURL} -fsSL"
+elif [[ -n ${WGET} ]]; then
+    FETCH="${WGET} -O-"
+else
+    echo "Failed to find a suitable download program. We're not sure how you dowloaded this script, but we'll install 'curl' automatically."
+    # shellcheck disable=SC2206
+    # We are OK with word-splitting here since we control the contents
+    INSTALL_PKGS=( ${INSTALL_PKGS[@]} curl )
+    FETCH="${CURL} -fsSL"
+    echo
+fi
+
+# Get the path to gpg or install it
+GNUPG=$( which gpg )
+if [[ -z ${GNUPG} ]]; then
+    echo "Failed to find the GNUPG binary, but we'll install 'gnupg' automatically."
+    # shellcheck disable=SC2206
+    # We are OK with word-splitting here since we control the contents
+    INSTALL_PKGS=( ${INSTALL_PKGS[@]} gnupg )
+    echo
+fi
 
 # If we have at least 1 dependency package to install (either curl or gnupg), do so
 if [[ ${#INSTALL_PKGS[@]} -gt 0 ]]; then
