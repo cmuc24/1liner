@@ -67,6 +67,8 @@ sourceTarballUrl=""
 rebootServer="true"
 setupToken="" # this is a OTP for securing an installation (https://forum.cloudron.io/topic/6389/add-password-for-initial-configuration)
 appstoreSetupToken=""
+cloudronId=""
+appstoreApiToken=""
 redo="false"
 
 args=$(getopt -o "" -l "help,provider:,version:,env:,skip-reboot,generate-setup-token,setup-token:,redo" -n "$0" -- "$@")
@@ -166,6 +168,22 @@ if ! DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef"
     exit 1
 fi
 
+echo "=> Validating setup token"
+if [[ -n "${appstoreSetupToken}" ]]; then
+    if ! httpCode=$(curl -sX POST -H "Content-type: application/json"  -o /tmp/response.json -w "%{http_code}" --data "{\"setupToken\": \"${appstoreSetupToken}\"}" "${apiServerOrigin}/api/v1/cloudron_setup_done"); then
+        echo "Could not reach ${apiServerOrigin} to complete setup"
+        exit 1
+    fi
+    if [[ "${httpCode}" != "200" ]]; then
+        echo -e "Failed to validate setup token.\n$(cat /tmp/response.json)"
+        exit 1
+    fi
+
+    setupResponse=$(cat /tmp/response.json)
+    cloudronId=$(echo "${setupResponse}" | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj["cloudronId"])')
+    appstoreApiToken=$(echo "${setupResponse}" | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj["cloudronToken"])')
+fi
+
 echo "=> Checking version"
 if ! releaseJson=$($curl -s "${installServerOrigin}/api/v1/releases?boxVersion=${requestedVersion}"); then
     echo "Failed to get release information"
@@ -191,7 +209,7 @@ if ! $curl -sL "${sourceTarballUrl}" | tar -zxf - -C "${box_src_tmp_dir}"; then
     exit 1
 fi
 
-echo -n "=> Installing base dependencies and downloading docker images (this takes some time) ..."
+echo -n "=> Installing base dependencies (this takes some time) ..."
 init_ubuntu_script=$(test -f "${box_src_tmp_dir}/scripts/init-ubuntu.sh" && echo "${box_src_tmp_dir}/scripts/init-ubuntu.sh" || echo "${box_src_tmp_dir}/baseimage/initializeBaseUbuntuImage.sh")
 if ! /bin/bash "${init_ubuntu_script}" &>> "${LOG_FILE}"; then
     echo "Init script failed. See ${LOG_FILE} for details"
@@ -215,15 +233,7 @@ mysql -uroot -ppassword -e "REPLACE INTO box.settings (name, value) VALUES ('web
 mysql -uroot -ppassword -e "REPLACE INTO box.settings (name, value) VALUES ('console_server_origin', '${consoleServerOrigin}');" 2>/dev/null
 
 if [[ -n "${appstoreSetupToken}" ]]; then
-    if ! setupResponse=$(curl -sX POST -H "Content-type: application/json" --data "{\"setupToken\": \"${appstoreSetupToken}\"}" "${apiServerOrigin}/api/v1/cloudron_setup_done"); then
-        echo "Could not complete setup. See ${LOG_FILE} for details"
-        exit 1
-    fi
-
-    cloudronId=$(echo "${setupResponse}" | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj["cloudronId"])')
     mysql -uroot -ppassword -e "REPLACE INTO box.settings (name, value) VALUES ('cloudron_id', '${cloudronId}');" 2>/dev/null
-
-    appstoreApiToken=$(echo "${setupResponse}" | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj["cloudronToken"])')
     mysql -uroot -ppassword -e "REPLACE INTO box.settings (name, value) VALUES ('appstore_api_token', '${appstoreApiToken}');" 2>/dev/null
 fi
 
