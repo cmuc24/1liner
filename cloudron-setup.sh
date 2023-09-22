@@ -8,10 +8,15 @@ function exitHandler() {
 
 trap exitHandler EXIT
 
+vergte() {
+    greater_version=$(echo -e "$1\n$2" | sort -rV | head -n1)
+    [[ "$1" == "${greater_version}" ]] && return 0 || return 1
+}
+
 # change this to a hash when we make a upgrade release
 readonly LOG_FILE="/var/log/cloudron-setup.log"
 readonly MINIMUM_DISK_SIZE_GB="18" # this is the size of "/" and required to fit in docker images 18 is a safe bet for different reporting on 20GB min
-readonly MINIMUM_MEMORY="960"      # this is mostly reported for 1GB main memory (DO 992, EC2 967, Linode 989, Serverdiscounter.com 974)
+readonly MINIMUM_MEMORY="950"      # this is mostly reported for 1GB main memory (DO 957, EC2 967, Linode 989, Serverdiscounter.com 974)
 
 readonly curl="curl --fail --connect-timeout 20 --retry 10 --retry-delay 2 --max-time 2400"
 
@@ -196,6 +201,13 @@ else
     version="${requestedVersion}"
 fi
 
+if vergte "${version}" "7.5.99"; then
+    if ! grep -q avx /proc/cpuinfo; then
+        echo "Cloudron version ${version} requires AVX support in the CPU. No avx found in /proc/cpuinfo"
+        exit 1
+    fi
+fi
+
 if ! sourceTarballUrl=$(echo "${releaseJson}" | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj["info"]["sourceTarballUrl"])'); then
     echo "No source code for version '${requestedVersion:-latest}'"
     exit 1
@@ -218,15 +230,16 @@ fi
 echo ""
 
 # The provider flag is still used for marketplace images
-echo "=> Installing Cloudron version ${version} (this takes some time) ..."
 mkdir -p /etc/cloudron
 echo "${provider}" > /etc/cloudron/PROVIDER
 [[ ! -z "${setupToken}" ]] && echo "${setupToken}" > /etc/cloudron/SETUP_TOKEN
 
+echo -n "=> Installing Cloudron version ${version} (this takes some time) ..."
 if ! /bin/bash "${box_src_tmp_dir}/scripts/installer.sh" &>> "${LOG_FILE}"; then
     echo "Failed to install cloudron. See ${LOG_FILE} for details"
     exit 1
 fi
+echo ""
 
 mysql -uroot -ppassword -e "REPLACE INTO box.settings (name, value) VALUES ('api_server_origin', '${apiServerOrigin}');" 2>/dev/null
 mysql -uroot -ppassword -e "REPLACE INTO box.settings (name, value) VALUES ('web_server_origin', '${webServerOrigin}');" 2>/dev/null
