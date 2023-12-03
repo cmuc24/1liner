@@ -6,7 +6,7 @@ fritzC.xspf
 	<title>Wiedergabeliste</title>
 	<trackList>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>Das Erste</title>
 			<album>Standard</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/daserstehd.png</image>
@@ -16,7 +16,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+			<location>rtsp://fritz.box</location>
 			<title>ZDF</title>
 			<album>Standard</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/zdfhd.png</image>
@@ -26,7 +26,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>BR Fernsehen</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/brhd.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -35,7 +35,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>arte HD</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/artehd.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -44,7 +44,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>RTL Television</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/rtl.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -53,7 +53,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>SAT.1</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/sat1.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -62,7 +62,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>ProSieben</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/pro7.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -71,7 +71,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+		      	<location>rtsp://fritz.box</location>
 			<title>DMAX</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/dmax.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -80,7 +80,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>VOX</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/vox.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -89,7 +89,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>RTLZWEI</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/rtl2.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -98,7 +98,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>kabel eins</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/kabel1.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -107,7 +107,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>TELE 5</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/tele5.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -116,7 +116,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>SIXX</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/sixx.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -125,7 +125,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>TLC</title>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/tlc.png</image>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -134,7 +134,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>phoenix HD</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/phoenixhd.png</image>
@@ -144,7 +144,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>N24 DOKU</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/n24doku.png</image>
@@ -154,7 +154,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>BILD HD</title>
 			<album>News</album>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -163,7 +163,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>kabel eins Doku</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/kabel1doku.png</image>
@@ -173,7 +173,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>ntv</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/ntv.png</image>
@@ -184,7 +184,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>WELT</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/welt.png</image>
@@ -194,7 +194,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>EURONEWS</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/euronews.png</image>
@@ -204,7 +204,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>CNN Int.</title>
 			<album>News</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/cnn.png</image>
@@ -214,7 +214,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>tagesschau24</title>
 			<album>News</album>
 			<image>http://olivedo.de/tagesschau-24.png</image>
@@ -224,7 +224,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>BBC WORLD</title>
 			<album>News</album>
 			<extension application="http://www.videolan.org/vlc/playlist/0">
@@ -233,7 +233,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>Deutsches Musik Fernsehen</title>
 			<album>Musik</album>
 			<image>http://olivedo.de/deutsches-musik-fernsehen.png</image>
@@ -243,7 +243,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>DELUXE MUSIC</title>
 			<album>Musik</album>
 			<image>http://olivedo.de/deluxe-music.png</image>
@@ -253,7 +253,7 @@ fritzC.xspf
 			</extension>
 		</track>
 		<track>
-      <location>rtsp://fritz.box</location>
+      			<location>rtsp://fritz.box</location>
 			<title>MTV</title>
 			<album>Musik</album>
 			<image>https://cdn.jsdelivr.net/gh/cmuc24/1liner@main/tvlogos/mtv.png</image>
