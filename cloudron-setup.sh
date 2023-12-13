@@ -16,7 +16,7 @@ vergte() {
 # change this to a hash when we make a upgrade release
 readonly LOG_FILE="/var/log/cloudron-setup.log"
 readonly MINIMUM_DISK_SIZE_GB="18" # this is the size of "/" and required to fit in docker images 18 is a safe bet for different reporting on 20GB min
-readonly MINIMUM_MEMORY="950"      # this is mostly reported for 1GB main memory (DO 957, EC2 967, Linode 989, Serverdiscounter.com 974)
+readonly MINIMUM_MEMORY="949"      # this is mostly reported for 1GB main memory (DO 957, EC2 949, Linode 989, Serverdiscounter.com 974)
 
 readonly curl="curl --fail --connect-timeout 20 --retry 10 --retry-delay 2 --max-time 2400"
 
@@ -123,7 +123,7 @@ fi
 
 if which nginx >/dev/null || which docker >/dev/null || which node > /dev/null; then
     if [[ "${redo}" == "false" ]]; then
-        echo "Error: Some packages like nginx/docker/nodejs are already installed. Cloudron requires specific versions of these packages and will install them as part of it's installation. Please start with a fresh Ubuntu install and run this script again." > /dev/stderr
+        echo "Error: Some packages like nginx/docker/nodejs are already installed. Cloudron requires specific versions of these packages and will install them as part of its installation. Please start with a fresh Ubuntu install and run this script again." > /dev/stderr
         exit 1
     fi
 fi
