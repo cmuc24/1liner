@@ -7,3 +7,5 @@
       apt:
         upgrade: yes
         update_cache: yes
+    - name: Execute command in remote shell; stdout goes to the specified file on the remote
+      ansible.builtin.shell: echo this is a test > yes.txt
