@@ -148,6 +148,11 @@ printf "**********************************************************************\n
 EOF
 chmod +x /etc/update-motd.d/91-cloudron-install-in-progress
 
+# workaround netcup setting immutable bit. can be removed in 8.0
+if lsattr -l /etc/resolv.conf 2>/dev/null | grep -q Immutable; then
+    chattr -i /etc/resolv.conf
+fi
+
 # Can only write after we have confirmed script has root access
 echo "Running cloudron-setup with args : $@" > "${LOG_FILE}"
 
