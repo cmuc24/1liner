@@ -7,25 +7,22 @@ SUPPORTED_ARCHITECTURES='@(amd64|armhf|arm64)'
 SUPPORTED_DEBIAN_RELEASES='@(buster|bullseye|bookworm)'
 SUPPORTED_UBUNTU_RELEASES='@(bionic|cosmic|disco|eoan|focal|groovy|hirsute|impish|jammy|kinetic|lunar|mantic)'
 
-# Check that /etc/apt exists; if not, this isn't a valid distro for this script
-if [[ ! -d /etc/apt ]]; then
-    echo "This script is for Debian-based distributions using APT only."
-    echo "See our downloads page at https://jellyfin.org/downloads/server for more options."
+SCRIPT_URL="https://repo.jellyfin.org/install-debuntu.sh"
+GPG_KEY_URL="https://repo.jellyfin.org/jellyfin_team.gpg.key"
+DOWNLOADS_URL="https://jellyfin.org/downloads/server"
+CONTACT_URL="https://jellyfin.org/contact"
+
+# Fail out if we can't find /etc/apt or /etc/os-release
+if [[ ! -d /etc/apt || ! -f /etc/os-release ]]; then
+    echo "ERROR: Couldn't find the '/etc/apt' directory or '/etc/os-release' manifest."
+    echo "This script is for Debian-based distributions using APT only. Please consider a Docker-based or manual install instead: ${DOWNLOADS_URL}"
     exit 1
 fi
 
 # Check that we're root; if not, fail out
 if [[ $(whoami) != "root" ]]; then
-    echo "This script must be run as 'root' or with 'sudo' to function."
-    echo "Try using the command: curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash"
-    exit 1
-fi
-
-# Fail out if we can't find /etc/os-release
-if [[ ! -f /etc/os-release ]]; then
-    echo
-    echo "Failed to find file '/etc/os-release'. This script requires '/etc/os-release' to autodetect repository settings, and this is likely an unsupported operating system."
-    echo "Consider using the manual instructions or files from https://jellyfin.org/downloads/server instead, or use https://jellyfin.org/contact to find us for troubleshooting."
+    echo "ERROR: This script must be run as 'root' or with 'sudo' to function."
+    echo "Try using this command instead: curl ${SCRIPT_URL} | sudo bash"
     exit 1
 fi
 
@@ -43,8 +40,8 @@ case "${ARCHITECTURE}" in
         true
     ;;
     *)
-        echo "Sorry, we don't support the CPU architecture '${ARCHITECTURE}' with this script."
-        echo "Please consider a Docker-based or manual install instead."
+        echo "ERROR: We don't support the CPU architecture '${ARCHITECTURE}' with this script."
+        echo "Please consider a Docker-based or manual install instead: ${DOWNLOADS_URL}"
         exit 1
     ;;
 esac
@@ -88,8 +85,8 @@ case "${REPO_OS}" in
                 true
             ;;
             *)
-                echo "Sorry, we don't support the Debian codename '${VERSION}' with this script."
-                echo "Please consider a Docker-based or manual install instead."
+                echo "ERROR: We don't support the Debian codename '${VERSION}' with this script."
+                echo "Please consider a Docker-based or manual install instead: ${DOWNLOADS_URL}"
                 exit 1
             ;;
         esac
@@ -102,15 +99,15 @@ case "${REPO_OS}" in
                 true
             ;;
             *)
-                echo "Sorry, we don't support the Ubuntu codename '${VERSION}' with this script."
-                echo "Please consider a Docker-based or manual install instead."
+                echo "ERROR: We don't support the Ubuntu codename '${VERSION}' with this script."
+                echo "Please consider a Docker-based or manual install instead: ${DOWNLOADS_URL}"
                 exit 1
             ;;
         esac
     ;;
     *)
-        echo "Sorry, we don't support the base OS '${REPO_OS}' with this script."
-        echo "Please consider a Docker-based or manual install instead."
+        echo "ERROR: We don't support the base OS '${REPO_OS}' with this script."
+        echo "Please consider a Docker-based or manual install instead: ${DOWNLOADS_URL}"
         exit 1
     ;;
 esac
@@ -180,11 +177,11 @@ fi
 
 # Download our repository signing key and install it to the keyring directory
 echo "> Fetching repository signing key."
-$FETCH https://repo.jellyfin.org/jellyfin_team.gpg.key | gpg --dearmor --yes --output /etc/apt/keyrings/jellyfin.gpg
+$FETCH ${GPG_KEY_URL} | gpg --dearmor --yes --output /etc/apt/keyrings/jellyfin.gpg
 # shellcheck disable=SC2181
 # We don't want to explicitly include the command in the 'if' for readibility
 if [[ $? -gt 0 ]]; then
-    echo "Failed to install key. Use https://jellyfin.org/contact to find us for troubleshooting."
+    echo "ERROR: Failed to install key. Use ${CONTACT_URL} to find us for troubleshooting."
     exit 1
 fi
 echo
@@ -214,7 +211,7 @@ apt update
 # shellcheck disable=SC2181
 # We don't want to explicitly include the command in the 'if' for readibility
 if [[ $? -gt 0 ]]; then
-    echo "Failed to update APT repositories. Something is wrong with your APT sources, GPG keys, or Internet connection. Try again shortly or use https://jellyfin.org/contact to find us for troubleshooting."
+    echo "ERROR: Failed to update APT repositories. Something is wrong with your APT sources, GPG keys, or Internet connection. Try again shortly or use ${CONTACT_URL} to find us for troubleshooting."
     exit 1
 fi
 echo
@@ -225,7 +222,7 @@ apt install --yes jellyfin
 # shellcheck disable=SC2181
 # We don't want to explicitly include the command in the 'if' for readibility
 if [[ $? -gt 0 ]]; then
-    echo "Failed to install Jellyfin. Use https://jellyfin.org/contact to find us for troubleshooting."
+    echo "ERROR: Failed to install Jellyfin. Use ${CONTACT_URL} to find us for troubleshooting."
     exit 1
 fi
 echo
@@ -255,7 +252,7 @@ IP_ADDRESS="$( ip address show dev "${GATEWAY_IFACE}" \
                | awk -F '/' '{ print $1 }' )"
 
 # Output the explanation of the above output, next-step including link with IP address/port, and welcome message
-echo "You should see the service as 'active (running)' above. If not, use https://jellyfin.org/contact to find us for troubleshooting."
+echo "You should see the service as 'active (running)' above. If not, use ${CONTACT_URL} to find us for troubleshooting."
 echo
 echo "You can access your new instance now at http://${IP_ADDRESS}:8096 in your web browser to finish setting up Jellyfin."
 echo
