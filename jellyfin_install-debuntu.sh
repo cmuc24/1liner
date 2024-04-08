@@ -49,16 +49,6 @@ esac
 # Handle some known alternative base OS values with 1-to-1 mappings
 # Use the result as our repository base OS
 case "${BASE_OS}" in
-    linuxmint)
-        # Linux Mint can either be Debian- or Ubuntu-based, so pick the right one
-        if grep -q "DEBIAN_CODENAME=" /etc/os-release &>/dev/null; then
-            REPO_OS="debian"
-            VERSION="$( awk -F'=' '/^DEBIAN_CODENAME=/{ print $NF }' /etc/os-release )"
-        else
-            REPO_OS="ubuntu"
-            VERSION="$( awk -F'=' '/^UBUNTU_CODENAME=/{ print $NF }' /etc/os-release )"
-        fi
-    ;;
     raspbian)
         # Raspbian uses our Debian repository
         REPO_OS="debian"
@@ -70,8 +60,17 @@ case "${BASE_OS}" in
         VERSION="$( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release )"
     ;;
     *)
-        REPO_OS="${BASE_OS}"
-        VERSION="$( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release )"
+        # Try to determine upstream info automatically (e.g. Linux Mint)
+        if grep -q "DEBIAN_CODENAME=" /etc/os-release &>/dev/null; then
+            REPO_OS="debian"
+            VERSION="$( awk -F'=' '/^DEBIAN_CODENAME=/{ print $NF }' /etc/os-release )"
+        elif grep -q "UBUNTU_CODENAME=" /etc/os-release &>/dev/null; then
+            REPO_OS="ubuntu"
+            VERSION="$( awk -F'=' '/^UBUNTU_CODENAME=/{ print $NF }' /etc/os-release )"
+        else
+            REPO_OS="${BASE_OS}"
+            VERSION="$( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release )"
+        fi
     ;;
 esac
 
@@ -106,9 +105,18 @@ case "${REPO_OS}" in
         esac
     ;;
     *)
-        echo "ERROR: We don't support the base OS '${REPO_OS}' with this script."
-        echo "Please consider a Docker-based or manual install instead: ${DOWNLOADS_URL}"
-        exit 1
+        YELLOW='\033[0;33m'
+        NC='\033[0m' # No Color
+        echo -e "${YELLOW}WARNING${NC}: Autodetection of base OS and version failed."
+        echo -e "To continue, please enter the following as 'Repo OS' and 'Repo Release', respectively::"
+        echo -e "  (1) The upsteam distribution of your current distro (either 'debian' or 'ubuntu')."
+        echo -e "  (2) The closest upstream release codename of your current distro ('bookworm', 'focal', etc.)."
+        echo -e "If you do not know, please consult your distribution's documentation, or try the latest Ubuntu LTS details."
+        echo
+        echo -en "Repo OS: "
+        read -r REPO_OS < /dev/tty
+        echo -en "Repo Release: "
+        read -r VERSION < /dev/tty
     ;;
 esac
 
