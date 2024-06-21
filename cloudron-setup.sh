@@ -16,7 +16,7 @@ vergte() {
 # change this to a hash when we make a upgrade release
 readonly LOG_FILE="/var/log/cloudron-setup.log"
 readonly MINIMUM_DISK_SIZE_GB="18" # this is the size of "/" and required to fit in docker images 18 is a safe bet for different reporting on 20GB min
-readonly MINIMUM_MEMORY="949"      # this is mostly reported for 1GB main memory (DO 957, EC2 949, Linode 989, Serverdiscounter.com 974)
+readonly MINIMUM_MEMORY="941"      # this is mostly reported for 1GB main memory (DO 957, EC2 949, Linode 989, Lightsail 941)
 
 readonly curl="curl --fail --connect-timeout 20 --retry 10 --retry-delay 2 --max-time 2400"
 
@@ -28,6 +28,7 @@ readonly disk_size_gb=$((${disk_size_bytes}/1024/1024))
 
 readonly RED='\033[31m'
 readonly GREEN='\033[32m'
+readonly YELLOW='\033[33m'
 readonly DONE='\033[m'
 
 # verify the system has minimum requirements met
@@ -116,8 +117,8 @@ fi
 
 # Only --help works with mismatched ubuntu
 ubuntu_version=$(lsb_release -rs)
-if [[ "${ubuntu_version}" != "16.04" && "${ubuntu_version}" != "18.04" && "${ubuntu_version}" != "20.04" && "${ubuntu_version}" != "22.04" ]]; then
-    echo "Cloudron requires Ubuntu 18.04, 20.04, 22.04" > /dev/stderr
+if [[ "${ubuntu_version}" != "16.04" && "${ubuntu_version}" != "18.04" && "${ubuntu_version}" != "20.04" && "${ubuntu_version}" != "22.04" && "${ubuntu_version}" != "24.04" ]]; then
+    echo "Cloudron requires Ubuntu 18.04, 20.04, 22.04, 24.04" > /dev/stderr
     exit 1
 fi
 
@@ -148,7 +149,7 @@ printf "**********************************************************************\n
 EOF
 chmod +x /etc/update-motd.d/91-cloudron-install-in-progress
 
-# workaround netcup setting immutable bit. can be removed in 8.0
+# workaround netcup setting immutable bit. required for installation pre 8.0
 if lsattr -l /etc/resolv.conf 2>/dev/null | grep -q Immutable; then
     chattr -i /etc/resolv.conf
 fi
@@ -206,11 +207,19 @@ else
     version="${requestedVersion}"
 fi
 
-if vergte "${version}" "7.5.99"; then
-    if ! grep -q avx /proc/cpuinfo; then
+# 7.6 dropped support for CPUs lacking AVX but this came back in 8.0
+if ! grep -q avx /proc/cpuinfo; then
+    if vergte "${version}" "7.5.99" && vergte "7.8.0" "${version}"; then
         echo "Cloudron version ${version} requires AVX support in the CPU. No avx found in /proc/cpuinfo"
         exit 1
+    else
+        echo "    ${YELLOW}CPU has no AVX support. MongoDB will be disabled${DONE}"
     fi
+fi
+
+if [[ "${ubuntu_version}" == "24.04" ]] && ! vergte "${version}" "8.0.0"; then
+    echo "Cloudron >= 8.0.0 required for installation on Ubuntu ${ubuntu_version}"
+    exit 1
 fi
 
 if ! sourceTarballUrl=$(echo "${releaseJson}" | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj["info"]["sourceTarballUrl"])'); then
